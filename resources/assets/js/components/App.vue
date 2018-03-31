@@ -88,6 +88,9 @@
         },
         computed: {
             itemsInCart() {
+                if(this.checkout) {
+                    return 0;
+                }
                 return this.checkout.lineItems.edges.length;
             }
         },
@@ -115,8 +118,44 @@
                 });
                 this.handleCartOpen();
             },
-            updateLineItemInCart(){},
-            removeLineItemInCart(){},
+            updateLineItemInCart(lineItemId, quantity){
+                this.$apollo.mutate({
+                    // Query
+                    mutation: checkoutLineItemsUpdate,
+                    // Parameters
+                    variables: {
+                        checkoutId: this.checkout.id,
+                        lineItems:  [
+                            {id: lineItemId, quantity: parseInt(quantity, 10)}
+                        ]
+                    }
+                }).then((res) => {
+                    console.log(res)
+                    this.checkout = res.data.checkoutLineItemsUpdate.checkout;
+                }).catch((error) => {
+                    console.error(error)
+                });
+            },
+            removeLineItemInCart(lineItemId){
+                this.$apollo.mutate({
+                    // Query
+                    mutation: checkoutLineItemsRemove,
+                    // Parameters
+                    variables: {
+                        checkoutId: this.checkout.id,
+                        lineItemIds:  [
+                            lineItemId
+                        ]
+                    }
+                }).then((res) => {
+                    this.checkout = res.data.checkoutLineItemsRemove.checkout;
+                    if(!this.itemsInCart) {
+                        this.handleCartClose();
+                    }
+                }).catch((error) => {
+                    console.error(error)
+                });
+            },
             associateCustomerCheckout(){},
             createCheckout() {
                 this.$apollo.mutate({

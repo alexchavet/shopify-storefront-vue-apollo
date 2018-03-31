@@ -8,8 +8,15 @@
             ×
         </button>
     </header>
-    <ul class="Cart__line-items">
-        <!--{line_items}-->
+    <ul class="Cart__line-items" v-if="checkout">
+        <Line-Item
+                v-for="line_item in checkout.lineItems.edges"
+                :removeLineItemInCart="removeLineItemInCart"
+                :updateLineItemInCart="updateLineItemInCart"
+                :key="line_item.node.id.toString()"
+                :line_item="line_item.node"
+        >
+        </Line-Item>
     </ul>
     <footer class="Cart__footer">
         <div class="Cart-info clearfix">
@@ -35,10 +42,13 @@
     </div>
 </template>
 <script>
-
+import LineItem from './LineItem';
 export default {
     mounted() {
         console.log('Component mounted.')
+    },
+    components: {
+        'Line-Item' : LineItem
     },
     props: {
         checkout : {
