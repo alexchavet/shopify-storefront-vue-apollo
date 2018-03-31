@@ -1,6 +1,6 @@
 import VueApollo from 'vue-apollo';
 import apolloClient from "./shopify";
-import appContainer from "./components/appContainer";
+import App from "./components/App";
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -27,7 +27,7 @@ const app = new Vue({
     el: '#app',
     provide: apolloProvider.provide(),
     components: {
-        'app-container' : appContainer
+        'App' : App
     },
-    template: "<app-container></app-container>"
+    template: "<App></App>"
 });
