@@ -9,21 +9,23 @@
                 :handleOptionChange="handleOptionChange"
                 :key="option.id.toString()"
                 :option="option"
-        ></Variant-Selectors>
+        />
         <label class="Product__option">
             Quantity
             <input min="1" type="number" v-model="selectedVariantQuantity">
         </label>
-        <button class="Product__buy button" @click="addVariantToCart(variant.id, selectedVariantQuantity)">Add to Cart</button>
+        <button class="Product__buy button" @click="addVariantToCart(variant.id, selectedVariantQuantity)">Add to Cart
+        </button>
     </div>
 </template>
 
 <script>
     import VariantSelectors from './VariantSelectors';
+
     export default {
         data() {
             return {
-                selectedVariantImage : '',
+                selectedVariantImage: '',
                 selectedVariantQuantity: 1,
                 selectedOptions: {}
             }
@@ -32,12 +34,12 @@
             product: {
                 type: Object
             },
-            addVariantToCart : {
-                type : Function
+            addVariantToCart: {
+                type: Function
             }
         },
         components: {
-            'Variant-Selectors' : VariantSelectors
+            'Variant-Selectors': VariantSelectors
         },
         computed: {
             hasImage() {
@@ -47,7 +49,7 @@
                 return this.selectedVariant || this.product.variants.edges[0].node;
             },
             variantImage() {
-                if(!this.hasImage) {
+                if (!this.hasImage) {
                     return '';
                 }
                 return this.selectedVariantImage || this.product.images.edges[0].node.src;
@@ -83,7 +85,7 @@
         },
         mounted() {
             this.product.options.forEach((selector) => {
-                this.selectedOptions = { [selector.name]: selector.values[0] }
+                this.selectedOptions = {[selector.name]: selector.values[0]}
             });
         },
     }

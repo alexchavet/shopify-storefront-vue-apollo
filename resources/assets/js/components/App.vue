@@ -16,8 +16,8 @@
             </div>
 
             <div class="App__title">
-                <h1>shop.name: Vue Example</h1>
-                <h2>shop.description</h2>
+                <h1>{{shop.name}}: Vue Example</h1>
+                <h2>{{shop.description}}</h2>
             </div>
         </header>
         <div class="Product-wrapper">
@@ -96,7 +96,25 @@
             checkoutLineItemsUpdate(){},
             checkoutLineItemsRemove(){},
             checkoutCustomerAssociate(){},
-            addVariantToCart(){},
+            addVariantToCart(variantId, quantity){
+
+                this.$apollo.mutate({
+                    // Query
+                    mutation: checkoutLineItemsAdd,
+                    // Parameters
+                    variables: {
+                        checkoutId: this.checkout.id,
+                        lineItems:  [
+                            {variantId, quantity: parseInt(quantity, 10)}
+                        ]
+                    }
+                }).then((res) => {
+                    this.checkout = res.data.checkoutLineItemsAdd.checkout;
+                }).catch((error) => {
+                    console.error(error)
+                });
+                this.handleCartOpen();
+            },
             updateLineItemInCart(){},
             removeLineItemInCart(){},
             associateCustomerCheckout(){},

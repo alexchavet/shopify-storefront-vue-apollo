@@ -9,7 +9,7 @@
                 v-for="value in option.values"
                 :value="value" :key="`${option.name}-${value}`"
         >
-           {{value}}
+            {{value}}
         </option>
     </select>
 </template>
@@ -17,10 +17,10 @@
 <script>
     export default {
         props: {
-            handleOptionChange : {
-                type : Function
+            handleOptionChange: {
+                type: Function
             },
-            option : {
+            option: {
                 type: Object
             }
         },
