@@ -4,21 +4,22 @@
              :src="variantImage" alt="`${product.title} product shot`"/>
         <h5 class="Product__title">{{product.title}}</h5>
         <span class="Product__price">${{variant.price}}</span>
-        <!--<Variant-Selectors-->
-                <!--v-for="option in product.options"-->
-                <!--handleOptionChange="handleOptionChang"-->
-                <!--key="option.id.toString()"-->
-                <!--option="option"-->
-        <!--&gt;</Variant-Selectors>-->
+        <Variant-Selectors
+                v-for="option in product.options"
+                :handleOptionChange="handleOptionChange"
+                :key="option.id.toString()"
+                :option="option"
+        ></Variant-Selectors>
         <label class="Product__option">
             Quantity
             <input min="1" type="number" v-model="selectedVariantQuantity">
         </label>
-        <button class="Product__buy button" @click="addVariantToCart(variant.id, variantQuantity)">Add to Cart</button>
+        <button class="Product__buy button" @click="addVariantToCart(variant.id, selectedVariantQuantity)">Add to Cart</button>
     </div>
 </template>
 
 <script>
+    import VariantSelectors from './VariantSelectors';
     export default {
         data() {
             return {
@@ -34,6 +35,9 @@
             addVariantToCart : {
                 type : Function
             }
+        },
+        components: {
+            'Variant-Selectors' : VariantSelectors
         },
         computed: {
             hasImage() {
