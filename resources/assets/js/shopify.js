@@ -13,7 +13,7 @@ Vue.use(VueApollo);
 
 const httpLink = new HttpLink({
     // You should use an absolute URL here
-    uri: SHOPIFY_STORE_URL + '/api/graphql',
+    uri: 'http://' + SHOPIFY_STORE_URL + '/api/graphql',
     headers: {
         'X-Shopify-Storefront-Access-Token' : SHOPIFY_STOREFRONT_ACCESS_TOKEN
     }
