@@ -1,11 +1,15 @@
 <template>
-    <div class="container">
-
+    <div class="container" v-if="$apollo.loading">
+        <h1 class="display-3">Loading...</h1>
+    </div>
+    <div class="container" v-else>
+        <h1 class="display-3">{{shop.name}}</h1>
     </div>
 </template>
 
 <script>
     import {
+        getShopData,
         createCheckout,
         checkoutLineItemsAdd,
         checkoutLineItemsUpdate,
@@ -16,6 +20,7 @@
         removeLineItemInCart,
         associateCustomerCheckout
     } from './../queries/checkout';
+    import get from 'lodash';
 
     export default {
         data() {
@@ -24,8 +29,22 @@
                 isCustomerAuthOpen: false,
                 isNewCustomer: false,
                 products: [],
-                checkout: { lineItems: { edges: [] } }
+                checkout: { lineItems: { edges: [] } },
+                shop: {}
             }
+        },
+        apollo :{
+            shop() {
+                return {
+                    query : getShopData,
+                    update(res) {
+                        return res.shop
+                    }
+                }
+            }
+        },
+        computed: {
+            
         },
         methods: {
             createCheckout() {

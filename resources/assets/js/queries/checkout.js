@@ -1,5 +1,63 @@
 import gql from 'graphql-tag';
 
+
+export const getShopData = gql`
+  query {
+    shop {
+         name
+    description
+    products(first: 20) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        node {
+          id
+          title
+          options {
+            id
+            name
+            values
+          }
+          variants(first: 250) {
+            pageInfo {
+              hasNextPage
+              hasPreviousPage
+            }
+            edges {
+              node {
+                id
+                title
+                selectedOptions {
+                  name
+                  value
+                }
+                image {
+                  src
+                }
+                price
+              }
+            }
+          }
+          images(first: 250) {
+            pageInfo {
+              hasNextPage
+              hasPreviousPage
+            }
+            edges {
+              node {
+                src
+              }
+            }
+          }
+        }
+      }
+    }
+    }  
+  }
+`;
+
 const CheckoutFragment = gql`
   fragment CheckoutFragment on Checkout {
     id
@@ -102,9 +160,10 @@ export const checkoutCustomerAssociate = gql`
   ${CheckoutFragment}
 `;
 
-export function addVariantToCart(variantId, quantity){
+export function addVariantToCart(variantId, quantity) {
     this.checkoutLineItemsAdd(
-        { variables: { checkoutId: this.state.checkout.id, lineItems:  [{variantId, quantity: parseInt(quantity, 10)}] }
+        {
+            variables: {checkoutId: this.state.checkout.id, lineItems: [{variantId, quantity: parseInt(quantity, 10)}]}
         }).then((res) => {
         this.setState({
             checkout: res.data.checkoutLineItemsAdd.checkout
@@ -114,9 +173,13 @@ export function addVariantToCart(variantId, quantity){
     this.handleCartOpen();
 }
 
-export function updateLineItemInCart(lineItemId, quantity){
+export function updateLineItemInCart(lineItemId, quantity) {
     this.checkoutLineItemsUpdate(
-        { variables: { checkoutId: this.state.checkout.id, lineItems: [{id: lineItemId, quantity: parseInt(quantity, 10)}] }
+        {
+            variables: {
+                checkoutId: this.state.checkout.id,
+                lineItems: [{id: lineItemId, quantity: parseInt(quantity, 10)}]
+            }
         }).then((res) => {
         this.setState({
             checkout: res.data.checkoutLineItemsUpdate.checkout
@@ -124,9 +187,10 @@ export function updateLineItemInCart(lineItemId, quantity){
     });
 }
 
-export function removeLineItemInCart(lineItemId){
+export function removeLineItemInCart(lineItemId) {
     this.checkoutLineItemsRemove(
-        { variables: { checkoutId: this.state.checkout.id, lineItemIds: [lineItemId] }
+        {
+            variables: {checkoutId: this.state.checkout.id, lineItemIds: [lineItemId]}
         }).then((res) => {
         this.setState({
             checkout: res.data.checkoutLineItemsRemove.checkout
@@ -134,9 +198,10 @@ export function removeLineItemInCart(lineItemId){
     });
 }
 
-export function associateCustomerCheckout(customerAccessToken){
+export function associateCustomerCheckout(customerAccessToken) {
     this.checkoutCustomerAssociate(
-        { variables: { checkoutId: this.state.checkout.id, customerAccessToken: customerAccessToken }
+        {
+            variables: {checkoutId: this.state.checkout.id, customerAccessToken: customerAccessToken}
         }).then((res) => {
         this.setState({
             checkout: res.data.checkoutCustomerAssociate.checkout,
