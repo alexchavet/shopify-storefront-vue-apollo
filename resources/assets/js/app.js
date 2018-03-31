@@ -1,4 +1,5 @@
-
+import VueApollo from 'vue-apollo';
+import apolloClient from "./shopify";
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -6,7 +7,6 @@
  */
 
 require('./bootstrap');
-require('./shopify');
 
 window.Vue = require('vue');
 
@@ -17,6 +17,10 @@ window.Vue = require('vue');
  */
 
 Vue.component('example-component', require('./components/ExampleComponent.vue'));
+
+const apolloProvider = new VueApollo({
+    defaultClient: apolloClient
+});
 
 const app = new Vue({
     el: '#app'
