@@ -3,6 +3,18 @@
         <h1 class="display-3">Loading...</h1>
     </div>
     <div class="container" v-else>
+        <div class="Flash__message-wrapper">
+            <p :class="{'Flash__message--open' : accountVerificationMessage}" class="Flash__message">
+                We have sent you an email, please click the link included to verify your email address
+            </p>
+        </div>
+        <Customer-Auth-With-Mutation
+                :closeCustomerAuth="closeCustomerAuth"
+                :isCustomerAuthOpen="isCustomerAuthOpen"
+                :newCustomer="isNewCustomer"
+                :associateCustomerCheckout="associateCustomerCheckout"
+                :showAccountVerificationMessage="showAccountVerificationMessage"
+        />
         <header class="App__header">
             <ul class="App__nav">
                 <li class="btn btn-primary App__customer-actions" @click="openCustomerAuth" data-customer-type="new-customer">Create an Account</li>
@@ -59,6 +71,7 @@
 
     import Cart from "./Cart";
     import Product from "./Product";
+    import CustomerAuthWithMutation from "./CustomerAuthWithMutation";
 
     export default {
         data() {
@@ -67,6 +80,7 @@
                 isCustomerAuthOpen: false,
                 isNewCustomer: false,
                 customerAccessToken: '',
+                accountVerificationMessage: '',
                 products: [],
                 checkout: { lineItems: { edges: [] } },
                 shop: {}
@@ -85,6 +99,7 @@
         components: {
             'Cart' : Cart,
             'Product' : Product,
+            'Customer-Auth-With-Mutation' : CustomerAuthWithMutation
         },
         computed: {
             itemsInCart() {
@@ -156,7 +171,21 @@
                     console.error(error)
                 });
             },
-            associateCustomerCheckout(){},
+            associateCustomerCheckout(customerAccessToken){
+                this.$apollo.mutate({
+                    // Query
+                    mutation: checkoutCustomerAssociate,
+                    // Parameters
+                    variables: {
+                        checkoutId: this.checkout.id, customerAccessToken: customerAccessToken
+                    }
+                }).then((res) => {
+                    this.checkout = res.data.checkoutCustomerAssociate.checkout;
+                        this.isCustomerAuthOpen = false;
+                }).catch((error) => {
+                    console.error(error)
+                })
+            },
             createCheckout() {
                 this.$apollo.mutate({
                     // Query
@@ -185,6 +214,15 @@
                         this.isNewCustomer = false;
                         this.isCustomerAuthOpen = true
                 }
+            },
+            showAccountVerificationMessage(){
+                this.accountVerificationMessage = true;
+                setTimeout(() => {
+                    this.accountVerificationMessage = false;
+                }, 5000);
+            },
+            closeCustomerAuth() {
+                this.isCustomerAuthOpen = false;
             }
         },
         mounted() {
