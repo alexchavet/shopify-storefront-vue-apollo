@@ -20,6 +20,14 @@
                 <h2>shop.description</h2>
             </div>
         </header>
+        <div class="Product-wrapper">
+            <Product v-for="product in shop.products.edges"
+                     :addVariantToCart="addVariantToCart"
+                     :checkout="checkout"
+                     :key="product.node.id.toString()"
+                     :product="product.node"
+            ></Product>
+        </div>
         <div class="cart-wrapper">
             <Cart
                     :removeLineItemInCart="removeLineItemInCart"
@@ -50,6 +58,7 @@
     import get from 'lodash';
 
     import Cart from "./Cart";
+    import Product from "./Product";
 
     export default {
         data() {
@@ -74,7 +83,8 @@
             }
         },
         components: {
-            'Cart' : Cart
+            'Cart' : Cart,
+            'Product' : Product,
         },
         computed: {
             itemsInCart() {
